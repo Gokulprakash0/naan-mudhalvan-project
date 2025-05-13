@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+PyMuPDF
+transformers
+pyttsx3

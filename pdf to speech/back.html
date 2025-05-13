@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF to Speech</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    input[type="file"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    label {
+      font-size: 14px;
+      color: #555;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    pre {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      text-align: left;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-top: 20px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 10px;
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>PDF to Speech</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+      <input type="file" name="pdf" required>
+      <label><input type="checkbox" name="save_audio"> Save audio?</label>
+      <button type="submit">Summarize</button>
+    </form>
+    <pre id="output"></pre>
+    <a id="audio-link" href="#" style="display:none;">Download Audio</a>
+  </div>
+
+  <script>
+    document.getElementById('upload-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const res = await fetch('http://127.0.0.1:8000/summarize-pdf/', { // Full URL to the endpoint
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      document.getElementById('output').innerText = data.summary;
+      if (data.audio_file) {
+        const link = document.getElementById('audio-link');
+        link.href = data.audio_file;
+        link.innerText = "Download Audio";
+        link.style.display = 'block';
+      }
+    };
+  </script>
+</body>
+</html>
